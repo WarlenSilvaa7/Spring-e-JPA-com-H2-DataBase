@@ -1,0 +1,128 @@
+openapi: '3.0.3'
+info:
+  title: API de Gestão de Produtos
+  version: '1.0'
+  description: API REST para a gestão de produtos de um E-commerce, com funcionalidades de CRUD.
+  contact:
+    name: Equipe de Desenvolvimento
+    email: suporte@apiuniville.com
+    url: https://apiuniville.com
+servers:
+  - url: https://apiuniville.com/
+    description: Servidor de produção
+  - url: http://localhost:8080/
+    description: Servidor local (desenvolvimento)
+paths:
+  /produtos:
+    get:
+      summary: Recupera todos os produtos
+      operationId: getAllProdutos
+      responses:
+        '200':
+          description: Lista de todos os produtos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produto'
+        '500':
+          description: Erro interno do servidor.
+
+    post:
+      summary: Cria um novo produto
+      operationId: criarProduto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+      responses:
+        '201':
+          description: Produto criado com sucesso.
+        '400':
+          description: Dados inválidos fornecidos.
+
+  /produtos/{id}:
+    get:
+      summary: Recupera um produto específico pelo ID
+      operationId: getProdutoById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do produto a ser recuperado
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Produto encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '404':
+          description: Produto não encontrado.
+        
+    put:
+      summary: Atualiza um produto existente
+      operationId: atualizarProduto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do produto a ser atualizado
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+      responses:
+        '200':
+          description: Produto atualizado com sucesso.
+        '404':
+          description: Produto não encontrado.
+        '400':
+          description: Dados inválidos fornecidos.
+        
+    delete:
+      summary: Deleta um produto específico
+      operationId: deletarProduto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do produto a ser deletado
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: Produto deletado com sucesso.
+        '404':
+          description: Produto não encontrado.
+
+components:
+  schemas:
+    Produto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID do produto
+        nome_produto:
+          type: string
+          description: Nome do produto
+        valor:
+          type: number
+          format: float
+          description: Valor do produto
+      required:
+        - nome_produto
+        - valor
